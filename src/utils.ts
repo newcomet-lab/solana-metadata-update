@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import fetch from 'node-fetch';
+import axios from 'axios';
 import {
     AccountInfo,
     Keypair,
@@ -133,10 +133,9 @@ const getMultipleAccountsCore = async (connection: any, keys: string[], commitme
 };
 
 export const getImageUrl = async (meta: Metadata): Promise<string> => {
-    return await fetch(meta.data.uri).then((result) => {
-        return result.json().then((json) => {
-            return (json as any).image;
-        });
+    return await axios.get(meta.data.uri).then((result: any) => {
+        console.log(result);
+        return result.data.image;
     });
 };
 

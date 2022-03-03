@@ -16,6 +16,7 @@ import { getMetadataAddress } from './metaplex/utils';
 import { decodeMetadata, updateMetadataInstruction } from './metaplex/metadata';
 import { MetadataContainer } from './data-types';
 import { CANDY_MACHINE_ID } from './constants';
+import { fetchHashTable } from './metaplex/mint';
 
 const RPC_CLUSTER_API = 'https://solana-api.projectserum.com';
 // const RPC_CLUSTER_API = 'https://api.devnet.solana.com';
@@ -251,6 +252,17 @@ program
         } else {
             console.log('🚫 No failed transactions. Life is good! 😎');
         }
+    });
+
+program
+    .command('get-mint-addresses')
+    .option('-e, --env <string>', 'Solana cluster env name. One of: mainnet-beta, testnet, devnet', 'devnet')
+    .action(async (_directory, cmd) => {
+        const { env } = cmd.opts();
+        const connection = getConnection(env);
+        console.log(`Getting NFT mint addresses of Candy Machine`);
+        const addresses = fetchHashTable(connection, CANDY_MACHINE_ID.toBase58());
+        console.log('result >>> ', addresses);
     });
 
 program.parse(process.argv);
